@@ -1,8 +1,10 @@
 -- SQLite: permanently delete all rows from every application table.
 -- Back up the selected playground.db and stop the API/demos before running.
 -- Run the entire script with no active transaction, stopping on any error.
--- If an error occurs after BEGIN, run ROLLBACK; instead of continuing to COMMIT.
--- Table definitions, auto-increment counters, and files on disk are preserved.
+-- If a run fails or is cancelled after BEGIN (including at an IDE delete prompt),
+-- execute ROLLBACK; separately in the SAME console/connection before rerunning.
+-- Approve the intended full-table DELETE prompts and let the run reach COMMIT.
+-- Table definitions and files on disk are preserved; AUTOINCREMENT counters reset.
 
 PRAGMA foreign_keys = ON;
 
