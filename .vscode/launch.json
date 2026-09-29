@@ -1,0 +1,56 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Calliope API Debug Ollama",
+      "type": "debugpy",
+      "request": "launch",
+      "python": "${workspaceFolder}\\calliope-backend\\.venv\\Scripts\\python.exe",
+      "program": "${workspaceFolder}\\run.py",
+      "args": [
+        "serve",
+        "--port",
+        "8012",
+        "--data-dir",
+        ".\\calliope-backend\\data\\ollama"
+      ],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "env": {
+        "PYTHONUNBUFFERED": "1"
+      },
+      "preLaunchTask": "uv: sync playground"
+    },
+    {
+      "name": "Calliope API Debug Offline",
+      "type": "debugpy",
+      "request": "launch",
+      "python": "${workspaceFolder}\\calliope-backend\\.venv\\Scripts\\python.exe",
+      "program": "${workspaceFolder}\\run.py",
+      "args": ["serve", "--offline", "--port", "8011"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "env": {
+        "PYTHONUNBUFFERED": "1"
+      },
+      "preLaunchTask": "uv: sync playground"
+    },
+    {
+      "name": "Calliope Demo Offline",
+      "type": "debugpy",
+      "request": "launch",
+      "python": "${workspaceFolder}\\calliope-backend\\.venv\\Scripts\\python.exe",
+      "program": "${workspaceFolder}\\run.py",
+      "args": ["demo", "--offline", "--until", "story"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "env": {
+        "PYTHONUNBUFFERED": "1"
+      },
+      "preLaunchTask": "uv: sync playground"
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+{
+  "python.defaultInterpreterPath": "${workspaceFolder}\\calliope-backend\\.venv\\Scripts\\python.exe",
+  "python.terminal.activateEnvironment": false
+}

@@ -1,0 +1,102 @@
+# Start Calliope API Debug Ollama (legacy name; now uses the configured llama-server).
+# Live debugging uses 8012; offline debugging uses 8011; the default terminal server uses 8010.
+# Replace these IDs with the IDs from YOUR responses. Positions are not IDs.
+@base = http://127.0.0.1:8012
+@project = 1
+@session = 1
+@clip = 5
+
+### 0. Confirm mode, isolated database, and configured endpoints
+GET {{base}}/api/health
+
+### 1. Save an idea (no model call)
+POST {{base}}/api/projects
+Content-Type: application/json
+
+{
+  "title": "The Last Lantern",
+  "idea": "Mira guides a stranger through a flooded station before her lantern goes out.",
+  "tone": "Tense, then hopeful",
+  "target_duration": "30 seconds"
+}
+
+### 2. Generate the story (real llama-server model in live mode)
+POST {{base}}/api/projects/{{project}}/generate-story
+Content-Type: application/json
+
+{}
+
+### 3. Inspect saved story and real entity IDs
+GET {{base}}/api/projects/{{project}}/story
+
+### 4. Write scenes without the coverage stage yet
+POST {{base}}/api/projects/{{project}}/generate-script
+Content-Type: application/json
+
+{"with_clips": false}
+
+### 5. Inspect scenes and their unrendered default clips
+GET {{base}}/api/projects/{{project}}/scenes
+
+### 6. Split scenes into shot plans
+POST {{base}}/api/projects/{{project}}/expand-clips
+Content-Type: application/json
+
+{}
+
+### 7. Link an agent conversation to this project
+POST {{base}}/api/agent/sessions
+Content-Type: application/json
+
+{"project_id": {{project}}}
+
+### 8. Observe a read -> edit -> answer tool loop
+POST {{base}}/api/agent/sessions/{{session}}/messages
+Content-Type: application/json
+
+{
+  "content": "rename opening beat to The Lantern Awakens",
+  "allow_render": false,
+  "max_steps": 6
+}
+
+### 9. Inspect the persisted call/result pairs
+GET {{base}}/api/agent/sessions/{{session}}
+
+### 10. Inspect available workflow recipes
+GET {{base}}/api/workflows
+
+### 11. Inspect the actual image graph before rendering
+GET {{base}}/api/workflows/image
+
+### 12. Queue one real image in live mode (no worker execution yet)
+POST {{base}}/api/jobs/projects/{{project}}/render
+Content-Type: application/json
+
+{
+  "kind": "image",
+  "workflow_name": "image",
+  "prompt": "A brass lantern on a wooden bench inside a flooded station, warm amber light, cinematic photograph"
+}
+
+### 13. Inspect render jobs without running them
+GET {{base}}/api/jobs?project_id={{project}}
+
+### 14. Explicitly run ONE queued job (performs a real render in live mode)
+POST {{base}}/api/jobs/run-next
+
+### 15. Queue a particular clip with a local video workflow
+# Review the workflow and replace @clip with YOUR actual clip ID first.
+POST {{base}}/api/jobs/projects/{{project}}/generate-videos
+Content-Type: application/json
+
+{"workflow_name": "video", "clip_ids": [{{clip}}]}
+
+### 16. Run the next job, then inspect clips.clip_path through GET /scenes
+POST {{base}}/api/jobs/run-next
+
+### 17. Queue an export MANIFEST (not movie assembly)
+POST {{base}}/api/jobs/projects/{{project}}/export
+
+### 18. Write the export manifest
+POST {{base}}/api/jobs/run-next
